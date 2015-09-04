@@ -1,0 +1,3 @@
+[submodule "thirdparty/r3"]
+	path = thirdparty/r3
+	url = https://github.com/c9s/r3.git
