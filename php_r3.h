@@ -16,16 +16,28 @@
 
 extern zend_module_entry r3_module_entry;
 
-DECLARE_CLASS_ENTRY(R3);
+typedef struct _php_r3_resource {
+    node *node;
+    char * namespace;
+    int namespace_len;
+} php_r3_resource;
+
+#define PHP_R3_RESOURCE_NAME "R3 Tree"
+int le_r3_resource;
+
+// DECLARE_CLASS_ENTRY(R3);
 
 PHP_FUNCTION(r3_tree_create);
+
+PHP_FUNCTION(r3_tree_store);
 
 // global variable structure
 ZEND_BEGIN_MODULE_GLOBALS(r3)
     // zval *mux_array;
-    HashTable * persistent_list;
+    // HashTable * persistent_list;
     // zend_bool direction;
 ZEND_END_MODULE_GLOBALS(r3)
+
 
 #ifdef ZTS
 #define R3_G(v) TSRMG(r3_globals_id, zend_r3_globals *, v)
