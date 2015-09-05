@@ -136,15 +136,18 @@ PHP_FUNCTION(r3_tree_create)
 
 PHP_FUNCTION(r3_tree_insert)
 {
-    zval *zres;
-    zval *zcallback;
-    char *path;
+    zval *zres = NULL;
+    zval *zcallback = NULL;
+    char *path = NULL;
     int   path_len;
+    php_r3_resource *res = NULL;
+
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rsz",
                 &zres, &path, &path_len, &zcallback) == FAILURE) {
         RETURN_FALSE;
     }
-    php_r3_resource *res;
+
+
     ZEND_FETCH_RESOURCE(res, php_r3_resource*, &zres, -1, PHP_R3_RESOURCE_NAME, le_r3_resource_persist);
     if (res) {
 
@@ -154,14 +157,7 @@ PHP_FUNCTION(r3_tree_insert)
         // callable in string format
         if (Z_TYPE_P(zcallback) == IS_STRING) {
 
-            // zdata = pemalloc(sizeof(zval), 1);
             MAKE_PZVAL_STR(&zdata, zcallback);
-
-            /*
-            Z_TYPE_P(zdata) = Z_TYPE_P(zcallback);
-            Z_STRVAL_P(zdata) = pestrndup( Z_STRVAL_P(zcallback), Z_STRLEN_P(zcallback), 1);
-            Z_STRLEN_P(zdata) = Z_STRLEN_P(zcallback);
-            */
 
         } else if (Z_TYPE_P(zcallback) == IS_ARRAY) {
 
