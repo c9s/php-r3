@@ -14,12 +14,21 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_tree_create, 0, 0, 1)
 ZEND_END_ARG_INFO()
 */
 
+
+void MAKE_PZVAL_STR(zval** zdata, zval * zstr)
+{
+    *zdata = pemalloc(sizeof(zval), 1);
+    Z_TYPE_PP(zdata) = Z_TYPE_P(zstr);
+    Z_STRVAL_PP(zdata) = pestrndup( Z_STRVAL_P(zstr), Z_STRLEN_P(zstr), 1);
+    Z_STRLEN_PP(zdata) = Z_STRLEN_P(zstr);
+}
+
 static const zend_function_entry r3_functions[] = {
     PHP_FE(r3_tree_create, NULL)
     PHP_FE(r3_tree_create_persist, NULL)
     PHP_FE(r3_tree_delete_persist, NULL)
     PHP_FE(r3_tree_store, NULL)
-    // PHP_FE(r3_tree_insert_path, NULL)
+    PHP_FE(r3_tree_insert, NULL)
     PHP_FE_END
 };
 
@@ -112,8 +121,7 @@ PHP_FUNCTION(r3_tree_create)
     long  capacity = 10;
 
     /* parse parameters */
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l",
-            &capacity) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &capacity) == FAILURE) {
         RETURN_FALSE;
     }
 
@@ -121,6 +129,74 @@ PHP_FUNCTION(r3_tree_create)
     res = emalloc(sizeof(php_r3_resource));
     res->node = r3_tree_create(capacity);
     ZEND_REGISTER_RESOURCE(return_value, res, le_r3_resource);
+}
+
+PHP_FUNCTION(r3_tree_insert)
+{
+    zval *zres;
+    zval *zcallback;
+    char *path;
+    int   path_len;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "rsz",
+                &zres, &path, &path_len, &zcallback) == FAILURE) {
+        RETURN_FALSE;
+    }
+    php_r3_resource *res;
+    ZEND_FETCH_RESOURCE(res, php_r3_resource*, &zres, -1, PHP_R3_RESOURCE_NAME, le_r3_resource_persist);
+    if (res) {
+
+        // copy data
+        zval *zdata = NULL;
+
+        // callable in string format
+        if (Z_TYPE_P(zcallback) == IS_STRING) {
+
+            // zdata = pemalloc(sizeof(zval), 1);
+            MAKE_PZVAL_STR(&zdata, zcallback);
+
+            /*
+            Z_TYPE_P(zdata) = Z_TYPE_P(zcallback);
+            Z_STRVAL_P(zdata) = pestrndup( Z_STRVAL_P(zcallback), Z_STRLEN_P(zcallback), 1);
+            Z_STRLEN_P(zdata) = Z_STRLEN_P(zcallback);
+            */
+
+        } else if (Z_TYPE_P(zcallback) == IS_ARRAY) {
+
+            zdata = pemalloc(sizeof(zval), 1);
+            Z_TYPE_P(zdata) = IS_ARRAY;
+            Z_ARRVAL_P(zdata) = pemalloc(sizeof(HashTable), 1);
+            zend_hash_init(Z_ARRVAL_P(zdata), 2, NULL, NULL, 1);
+            zval **itemdata;
+            HashTable *arr_hash = Z_ARRVAL_P(zcallback);
+            HashPosition pointer;
+            for(zend_hash_internal_pointer_reset_ex(arr_hash, &pointer);
+                zend_hash_get_current_data_ex(arr_hash, (void**) &itemdata, &pointer) == SUCCESS; 
+                zend_hash_move_forward_ex(arr_hash, &pointer)) 
+            {
+                if (Z_TYPE_PP(itemdata) != IS_STRING) {
+                    php_error(E_ERROR, "Invalid callback data type.");
+                }
+                zval *zp_str = NULL;
+                MAKE_PZVAL_STR(&zp_str, *itemdata);
+                add_next_index_zval(zdata, zp_str);
+            }
+        }
+
+        // zend_hash_add(&fcgi_mgmt_vars, name, name_len, &zvalue, sizeof(zvalue), NULL);
+
+        int data = 10;
+        char *errstr = NULL;
+        node *ret = r3_tree_insert_pathl_ex(res->node, path, path_len, NULL, &data, &errstr);
+        if (ret == NULL) {
+            // failed insertion
+            // printf("error: %s\n", errstr);
+            // php_error(E_ERROR, errstr);
+            free(errstr); // errstr is created from `asprintf`, so you have to free it manually.
+            RETURN_FALSE;
+        }
+        RETURN_TRUE;
+    }
+    RETURN_FALSE;
 }
 
 PHP_FUNCTION(r3_tree_create_persist)
@@ -132,8 +208,8 @@ PHP_FUNCTION(r3_tree_create_persist)
     zend_rsrc_list_entry *le;
 
     /* parse parameters */
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ls",
-            &capacity, &namespace, &namespace_len) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl",
+            &namespace, &namespace_len, &capacity) == FAILURE) {
         RETURN_FALSE;
     }
 
@@ -182,9 +258,10 @@ PHP_FUNCTION(r3_tree_delete_persist)
         // zend_list_delete(Z_LVAL_P(zperson));
         zend_hash_del(&EG(persistent_list), key, key_len + 1);
         efree(key);
-        return;
+        RETURN_TRUE;
     }
     efree(key);
+    RETURN_TRUE;
 }
 
 
