@@ -33,6 +33,7 @@ static const zend_function_entry r3_functions[] = {
     PHP_FE(r3_tree_store, NULL)
     PHP_FE(r3_tree_insert, NULL)
     PHP_FE(r3_tree_compile, NULL)
+    PHP_FE(r3_tree_is_compiled, NULL)
     PHP_FE(r3_tree_match, NULL)
     PHP_FE_END
 };
@@ -231,6 +232,19 @@ PHP_FUNCTION(r3_tree_match)
 }
 
 
+PHP_FUNCTION(r3_tree_is_compiled)
+{
+    zval *zres = NULL;
+    php_r3_resource *res = NULL;
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "r", &zres) == FAILURE) {
+        RETURN_FALSE;
+    }
+    ZEND_FETCH_RESOURCE(res, php_r3_resource*, &zres, -1, PHP_R3_RESOURCE_NAME, le_r3_resource_persist);
+    if (res && res->compiled) {
+        RETURN_TRUE;
+    }
+    RETURN_FALSE;
+}
 
 
 PHP_FUNCTION(r3_tree_compile)
@@ -242,17 +256,20 @@ PHP_FUNCTION(r3_tree_compile)
     }
 
     ZEND_FETCH_RESOURCE(res, php_r3_resource*, &zres, -1, PHP_R3_RESOURCE_NAME, le_r3_resource_persist);
-    if (res) {
-        char *errstr = NULL;
-        int err = r3_tree_compile(res->node, &errstr);
-        if (err != 0) {
-            // fail
-            // printf("error: %s\n", errstr);
-            free(errstr); // errstr is created from `asprintf`, so you have to free it manually.
-            // php_error(E_ERROR, estrdup(errstr));
-            RETURN_FALSE;
-        }
+    if (!res) {
+        RETURN_FALSE;
     }
+
+    char *errstr = NULL;
+    int err = r3_tree_compile(res->node, &errstr);
+    if (err != 0) {
+        // fail
+        // printf("error: %s\n", errstr);
+        free(errstr); // errstr is created from `asprintf`, so you have to free it manually.
+        // php_error(E_ERROR, estrdup(errstr));
+        RETURN_FALSE;
+    }
+    res->compiled = TRUE;
     RETURN_TRUE;
 }
 
@@ -265,7 +282,7 @@ PHP_FUNCTION(r3_tree_create_persist)
     zend_rsrc_list_entry *le;
 
     /* parse parameters */
-    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl",
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|l",
             &namespace, &namespace_len, &capacity) == FAILURE) {
         RETURN_FALSE;
     }
@@ -281,6 +298,7 @@ PHP_FUNCTION(r3_tree_create_persist)
 
     php_r3_resource *res;
     res = pemalloc(sizeof(php_r3_resource), 1);
+    res->compiled = FALSE;
     res->node = r3_tree_create(capacity);
     ZEND_REGISTER_RESOURCE(return_value, res, le_r3_resource_persist);
 

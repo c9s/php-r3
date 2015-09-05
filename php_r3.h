@@ -18,6 +18,7 @@ extern zend_module_entry r3_module_entry;
 
 typedef struct _php_r3_resource {
     node *node;
+    bool compiled;
     char * namespace;
     int namespace_len;
 } php_r3_resource;
@@ -34,6 +35,7 @@ PHP_FUNCTION(r3_tree_create_persist);
 PHP_FUNCTION(r3_tree_delete_persist);
 PHP_FUNCTION(r3_tree_store);
 PHP_FUNCTION(r3_tree_compile);
+PHP_FUNCTION(r3_tree_is_compiled);
 PHP_FUNCTION(r3_tree_match);
 
 // global variable structure
