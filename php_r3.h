@@ -33,6 +33,8 @@ PHP_FUNCTION(r3_tree_create);
 PHP_FUNCTION(r3_tree_create_persist);
 PHP_FUNCTION(r3_tree_delete_persist);
 PHP_FUNCTION(r3_tree_store);
+PHP_FUNCTION(r3_tree_compile);
+PHP_FUNCTION(r3_tree_match);
 
 // global variable structure
 ZEND_BEGIN_MODULE_GLOBALS(r3)
