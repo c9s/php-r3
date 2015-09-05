@@ -11,7 +11,10 @@ compiler:
 - gcc
 
 install:
-- sudo apt-get install pcre
+- sudo apt-get update -qq
+- sudo apt-get install -qq automake pkg-config build-essential libtool automake autoconf m4 gnulib
+- sudo apt-get install -qq check libpcre3 libpcre3-dev libjemalloc-dev libjemalloc1
+- sudo apt-get install -qq graphviz-dev graphviz
 
 script:
 - phpize
