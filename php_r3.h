@@ -24,11 +24,13 @@ typedef struct _php_r3_resource {
 
 #define PHP_R3_RESOURCE_NAME "R3 Tree"
 int le_r3_resource;
+int le_r3_resource_persist;
 
 // DECLARE_CLASS_ENTRY(R3);
 
 PHP_FUNCTION(r3_tree_create);
-
+PHP_FUNCTION(r3_tree_create_persist);
+PHP_FUNCTION(r3_tree_delete_persist);
 PHP_FUNCTION(r3_tree_store);
 
 // global variable structure
