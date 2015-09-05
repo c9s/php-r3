@@ -18,6 +18,6 @@ install:
 
 script:
 - phpize
-- ./configure --enable-debug --with-pcre-dir=/usr
+- ./configure --libdir=x86_64-linux-gnu --enable-debug --with-pcre-dir=/usr
 - make
 - make test
