@@ -17,6 +17,9 @@ install:
 - sudo apt-get install -qq graphviz-dev graphviz
 - dpkg -S libpcre3
 
+before_script:
+- cd thirdparty/r3 && ./autogen.sh && ./configure && make
+
 script:
 - phpize
 - ./configure --with-libdir=lib/x86_64-linux-gnu --with-pcre-dir=/usr
