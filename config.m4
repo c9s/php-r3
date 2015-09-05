@@ -1,8 +1,4 @@
 dnl vim:sw=2:ts=2:sts=2:
-THIRDPARTY_BUILD_DIR="$srcdir/thirdparty/build"
-PHP_ADD_INCLUDE("$srcdir/thirdparty/r3/3rdparty")
-PHP_ADD_INCLUDE("$srcdir/thirdparty/r3/include")
-
 PHP_ARG_ENABLE(r3, whether to enable r3 support,
 Make sure that the comment is aligned:
 [ --enable-r3 Enable r3 support])
@@ -16,15 +12,7 @@ if test "$PHP_R3_DEBUG" != "no"; then
     AC_DEFINE(PHP_R3_DEBUG, 1, [Enable r3 debug support])
 fi
 
-PHP_NEW_EXTENSION(r3,
-  thirdparty/r3/3rdparty/zmalloc.c \
-  thirdparty/r3/src/node.c \
-  thirdparty/r3/src/edge.c \
-  thirdparty/r3/src/str.c \
-  thirdparty/r3/src/token.c \
-  thirdparty/r3/src/match_entry.c \
-  thirdparty/r3/src/slug.c \
-  php_r3.c, $ext_shared)
+PHP_NEW_EXTENSION(r3, php_r3.c, $ext_shared)
 
 if test $PHP_R3 != "no"; then
 
@@ -45,8 +33,6 @@ if test $PHP_R3 != "no"; then
   fi
   AC_MSG_RESULT([$PCRE_INCDIR])
 
-  AC_MSG_RESULT([LIBDIR = $PHP_LIBDIR])
-
   AC_MSG_CHECKING([for PCRE library location])
   if test "$PHP_PCRE_DIR" != "yes" ; then
     for j in $PHP_PCRE_DIR $PHP_PCRE_DIR/$PHP_LIBDIR; do
@@ -64,8 +50,15 @@ if test $PHP_R3 != "no"; then
   AC_MSG_RESULT([$PCRE_LIBDIR])
 
   AC_DEFINE(HAVE_PCRE, 1, [ ])
-  PHP_ADD_LIBRARY_WITH_PATH(pcre, $PCRE_LIBDIR, R3_SHARED_LIBADD)
   PHP_ADD_INCLUDE($PCRE_INCDIR)
+  PHP_ADD_LIBRARY_WITH_PATH(pcre, $PCRE_LIBDIR, R3_SHARED_LIBADD)
+
+  PHP_ADD_INCLUDE("$srcdir/thirdparty/r3/include")
+
+  R3_SHARED_LIBADD="$R3_SHARED_LIBADD $srcdir/thirdparty/r3/.libs/libr3.a"
+
+  AC_MSG_RESULT([R3_SHARED_LIBADD = $R3_SHARED_LIBADD])
+
   PHP_SUBST(R3_SHARED_LIBADD)
 fi
 
