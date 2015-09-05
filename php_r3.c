@@ -15,11 +15,14 @@ ZEND_END_ARG_INFO()
 */
 
 
+/**
+ * This function allocates a persistent zval and copy the string with pestrndup (persistent).
+ */
 void MAKE_PZVAL_STR(zval** zdata, zval * zstr)
 {
     *zdata = pemalloc(sizeof(zval), 1);
     Z_TYPE_PP(zdata) = Z_TYPE_P(zstr);
-    Z_STRVAL_PP(zdata) = pestrndup( Z_STRVAL_P(zstr), Z_STRLEN_P(zstr), 1);
+    Z_STRVAL_PP(zdata) = pestrndup(Z_STRVAL_P(zstr), Z_STRLEN_P(zstr), 1);
     Z_STRLEN_PP(zdata) = Z_STRLEN_P(zstr);
 }
 
