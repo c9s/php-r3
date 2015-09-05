@@ -45,6 +45,8 @@ if test $PHP_R3 != "no"; then
   fi
   AC_MSG_RESULT([$PCRE_INCDIR])
 
+  AC_MSG_RESULT([LIBDIR = $PHP_LIBDIR])
+
   AC_MSG_CHECKING([for PCRE library location])
   if test "$PHP_PCRE_DIR" != "yes" ; then
     for j in $PHP_PCRE_DIR $PHP_PCRE_DIR/$PHP_LIBDIR; do
