@@ -55,9 +55,11 @@ if test $PHP_R3 != "no"; then
 
   PHP_ADD_INCLUDE("$srcdir/thirdparty/r3/include")
 
-  R3_SHARED_LIBADD="$R3_SHARED_LIBADD $srcdir/thirdparty/r3/.libs/libr3.a"
+  R3_SHARED_LIBADD="$R3_SHARED_LIBADD $srcdir/thirdparty/r3/libr3.la"
 
   AC_MSG_RESULT([R3_SHARED_LIBADD = $R3_SHARED_LIBADD])
+
+  dnl PHP_ADD_MAKEFILE_FRAGMENT([Makefile.thirdparty])
 
   PHP_SUBST(R3_SHARED_LIBADD)
 fi
