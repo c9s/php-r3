@@ -10,7 +10,10 @@ php:
 compiler:
 - gcc
 
+install:
+- sudo apt-get install pcre
+
 script:
 - phpize
-- ./configure --with-pcre-dir=/usr
+- ./configure --enable-debug --with-pcre-dir=/usr
 - make
