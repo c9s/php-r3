@@ -33,25 +33,37 @@ if test $PHP_R3 != "no"; then
     for i in $PHP_PCRE_DIR $PHP_PCRE_DIR/include $PHP_PCRE_DIR/include/pcre $PHP_PCRE_DIR/local/include; do
       test -f $i/pcre.h && PCRE_INCDIR=$i
     done
-    if test -z "$PCRE_INCDIR"; then
-      AC_MSG_ERROR([Could not find pcre.h in $PHP_PCRE_DIR])
-    fi
-    AC_MSG_RESULT([$PCRE_INCDIR])
+  else
+    AC_MSG_CHECKING([for PCRE headers location])
+    for i in /usr/include /usr/local/include /usr/local/include/pcre /opt/local/include; do
+      test -f $i/pcre.h && PCRE_INCDIR=$i
+    done
+  fi
 
-    AC_MSG_CHECKING([for PCRE library location])
+  if test -z "$PCRE_INCDIR"; then
+    AC_MSG_ERROR([Could not find pcre.h in $PHP_PCRE_DIR])
+  fi
+  AC_MSG_RESULT([$PCRE_INCDIR])
+
+  AC_MSG_CHECKING([for PCRE library location])
+  if test "$PHP_PCRE_DIR" != "yes" ; then
     for j in $PHP_PCRE_DIR $PHP_PCRE_DIR/$PHP_LIBDIR; do
       test -f $j/libpcre.a || test -f $j/libpcre.$SHLIB_SUFFIX_NAME && PCRE_LIBDIR=$j
     done
-
-    if test -z "$PCRE_LIBDIR" ; then
-      AC_MSG_ERROR([Could not find libpcre.(a|$SHLIB_SUFFIX_NAME) in $PHP_PCRE_DIR])
-    fi
-    AC_MSG_RESULT([$PCRE_LIBDIR])
-
-    AC_DEFINE(HAVE_PCRE, 1, [ ])
-    PHP_ADD_LIBRARY_WITH_PATH(pcre, $PCRE_LIBDIR, R3_SHARED_LIBADD)
-    PHP_ADD_INCLUDE($PCRE_INCDIR)
+  else
+    for j in /usr/lib /usr/local/lib /opt/local/lib; do
+      test -f $j/libpcre.a || test -f $j/libpcre.$SHLIB_SUFFIX_NAME && PCRE_LIBDIR=$j
+    done
   fi
+
+  if test -z "$PCRE_LIBDIR" ; then
+    AC_MSG_ERROR([Could not find libpcre.(a|$SHLIB_SUFFIX_NAME) in $PHP_PCRE_DIR])
+  fi
+  AC_MSG_RESULT([$PCRE_LIBDIR])
+
+  AC_DEFINE(HAVE_PCRE, 1, [ ])
+  PHP_ADD_LIBRARY_WITH_PATH(pcre, $PCRE_LIBDIR, R3_SHARED_LIBADD)
+  PHP_ADD_INCLUDE($PCRE_INCDIR)
 
   PHP_SUBST(R3_SHARED_LIBADD)
 
