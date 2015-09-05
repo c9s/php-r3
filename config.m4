@@ -55,7 +55,7 @@ if test $PHP_R3 != "no"; then
 
   PHP_ADD_INCLUDE("$srcdir/thirdparty/r3/include")
 
-  R3_SHARED_LIBADD="$R3_SHARED_LIBADD $srcdir/thirdparty/r3/libr3.la"
+  R3_SHARED_LIBADD="$R3_SHARED_LIBADD $srcdir/thirdparty/r3/.libs/libr3.a"
 
   AC_MSG_RESULT([R3_SHARED_LIBADD = $R3_SHARED_LIBADD])
 
