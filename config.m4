@@ -64,19 +64,6 @@ if test $PHP_R3 != "no"; then
   AC_DEFINE(HAVE_PCRE, 1, [ ])
   PHP_ADD_LIBRARY_WITH_PATH(pcre, $PCRE_LIBDIR, R3_SHARED_LIBADD)
   PHP_ADD_INCLUDE($PCRE_INCDIR)
-
   PHP_SUBST(R3_SHARED_LIBADD)
-
-  dnl PHP_CHECK_LIBRARY(r3, r3_version,
-  dnl [
-  dnl   PHP_ADD_LIBRARY_WITH_PATH(r3, $UV_DIR/lib, R3_SHARED_LIBADD)
-  dnl   AC_DEFINE(HAVE_R3LIB,1,[ ])
-  dnl ],[
-  dnl   AC_MSG_ERROR([wrong r3 library version or library not found])
-  dnl ],[
-  dnl   -L$UV_DIR/lib -lm
-  dnl ])
-  dnl PHP_SUBST(R3_SHARED_LIBADD)
-  dnl PHP_ADD_MAKEFILE_FRAGMENT([Makefile.thirdparty])
 fi
 
