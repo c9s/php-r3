@@ -224,9 +224,11 @@ PHP_FUNCTION(r3_tree_match)
     node *matched_node = NULL;
     if (res) {
         matched_node = r3_tree_matchl(res->node, path, path_len, NULL);
-
-        zval *retzval = (zval*) matched_node->data;
-        RETURN_ZVAL(retzval, 1, 0);
+        if (matched_node) {
+            zval *retzval = (zval*) matched_node->data;
+            RETURN_ZVAL(retzval, 1, 0);
+        }
+        RETURN_FALSE;
     }
     RETURN_FALSE;
 }
