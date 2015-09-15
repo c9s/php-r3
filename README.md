@@ -5,6 +5,10 @@
 ## Build
 
 ```sh
+git clone --recursive git@github.com:c9s/php-r3.git
+git submodule init
+git submodule update
+
 cd thirdparty/r3 && ./autogen.sh && ./configure && make && cd ../..
 phpize
 ./configure --enable-r3 --with-pcre-dir=/opt/local
