@@ -4,12 +4,23 @@
 
 ## Build
 
+> Please note that `--with-pcre-dir` is required when your php is not compiled with bundled libpcre.
+
+Build on Linux:
+
 ```sh
-git clone --recursive git@github.com:c9s/php-r3.git
 git submodule init
 git submodule update
+./configure --enable-r3 --with-pcre-dir=/usr --with-libdir=lib/x86_64-linux-gnu
+make && make test
+make install
+```
 
-cd thirdparty/r3 && ./autogen.sh && ./configure && make && cd ../..
+Build on OS X (Macports):
+
+```sh
+git submodule init
+git submodule update
 phpize
 ./configure --enable-r3 --with-pcre-dir=/opt/local
 make clean
