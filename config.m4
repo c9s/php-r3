@@ -1,4 +1,9 @@
 dnl vim:sw=2:ts=2:sts=2:
+AC_PROG_CC
+AC_PROG_CC_STDC
+AC_FUNC_VPRINTF
+
+
 PHP_ARG_ENABLE(r3, whether to enable r3 support,
 Make sure that the comment is aligned:
 [ --enable-r3 Enable r3 support])
