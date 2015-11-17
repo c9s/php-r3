@@ -6,15 +6,15 @@ Make sure that the comment is aligned:
 PHP_ARG_WITH(pcre-dir, libpcre install dir,
 [  --with-pcre-dir=DIR PCRE: libpcre install prefix])
 
-
 if test "$PHP_R3_DEBUG" != "no"; then
     CFLAGS="$CFLAGS -Wall -g -ggdb -O0 -DPHP_R3_DEBUG=1"
     AC_DEFINE(PHP_R3_DEBUG, 1, [Enable r3 debug support])
 fi
 
-PHP_NEW_EXTENSION(r3, php_r3.c, $ext_shared)
-
 if test $PHP_R3 != "no"; then
+
+  r3_sources="thirdparty/r3/src/edge.c thirdparty/r3/src/node.c"
+  PHP_NEW_EXTENSION(r3, php_r3.c, $ext_shared)
 
   if test "$PHP_PCRE_DIR" != "yes" ; then
     AC_MSG_CHECKING([for PCRE headers location])
