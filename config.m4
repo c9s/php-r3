@@ -25,7 +25,6 @@ if test $PHP_R3 != "no"; then
   r3/src/slug.c
   r3/src/edge.c
   r3/src/node.c
-  r3/src/json.c
   r3/src/list.c
   r3/src/match_entry.c"
   PHP_NEW_EXTENSION(r3, $r3_sources php_r3.c, $ext_shared)
