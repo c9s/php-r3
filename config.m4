@@ -2,6 +2,7 @@ dnl vim:sw=2:ts=2:sts=2:
 AC_PROG_CC
 AC_PROG_CC_STDC
 AC_FUNC_VPRINTF
+AC_CHECK_FUNCS([gettimeofday memset strchr strdup strndup strstr])
 
 
 PHP_ARG_ENABLE(r3, whether to enable r3 support,
