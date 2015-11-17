@@ -17,7 +17,8 @@ install:
 - dpkg -S libpcre3
 
 before_script:
-- cd thirdparty/r3 && ./autogen.sh && ./configure && make && cd ../..
+- git submodule init
+- git submodule update
 
 script:
 - phpize

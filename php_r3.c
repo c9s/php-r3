@@ -1,6 +1,6 @@
 #include "php_r3.h"
 #include "ext/standard/info.h"
-#include "thirdparty/r3/include/r3.h"
+#include <r3.h>
 
 ZEND_DECLARE_MODULE_GLOBALS(r3);
 

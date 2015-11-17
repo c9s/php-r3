@@ -12,9 +12,17 @@ if test "$PHP_R3_DEBUG" != "no"; then
 fi
 
 if test $PHP_R3 != "no"; then
-
-  r3_sources="thirdparty/r3/src/edge.c thirdparty/r3/src/node.c"
-  PHP_NEW_EXTENSION(r3, php_r3.c, $ext_shared)
+  r3_sources="
+  r3/3rdparty/zmalloc.c
+  r3/src/str.c
+  r3/src/token.c
+  r3/src/slug.c
+  r3/src/edge.c
+  r3/src/node.c
+  r3/src/json.c
+  r3/src/list.c
+  r3/src/match_entry.c"
+  PHP_NEW_EXTENSION(r3, $r3_sources php_r3.c, $ext_shared)
 
   if test "$PHP_PCRE_DIR" != "yes" ; then
     AC_MSG_CHECKING([for PCRE headers location])
@@ -32,6 +40,7 @@ if test $PHP_R3 != "no"; then
     AC_MSG_ERROR([Could not find pcre.h in $PHP_PCRE_DIR])
   fi
   AC_MSG_RESULT([$PCRE_INCDIR])
+
 
   AC_MSG_CHECKING([for PCRE library location])
   if test "$PHP_PCRE_DIR" != "yes" ; then
@@ -53,11 +62,20 @@ if test $PHP_R3 != "no"; then
   PHP_ADD_INCLUDE($PCRE_INCDIR)
   PHP_ADD_LIBRARY_WITH_PATH(pcre, $PCRE_LIBDIR, R3_SHARED_LIBADD)
 
-  PHP_ADD_INCLUDE("$srcdir/thirdparty/r3/include")
+  PHP_ADD_INCLUDE("$srcdir/r3/include")
 
-  R3_SHARED_LIBADD="$R3_SHARED_LIBADD $srcdir/thirdparty/r3/.libs/libr3.a"
+  dnl include zmalloc
+  PHP_ADD_INCLUDE("$srcdir/r3/3rdparty")
 
-  AC_MSG_RESULT([R3_SHARED_LIBADD = $R3_SHARED_LIBADD])
+  AC_MSG_RESULT([$INCLUDES])
+
+  AC_CHECK_HEADERS([ext/pcre/php_pcre.h],[
+    AC_MSG_RESULT([Found php_pcre.h])
+    PHP_ADD_EXTENSION_DEP([r3], [pcre])
+  ])
+
+  dnl R3_SHARED_LIBADD="$R3_SHARED_LIBADD $srcdir/r3/.libs/libr3.a"
+  dnl AC_MSG_RESULT([R3_SHARED_LIBADD = $R3_SHARED_LIBADD])
 
   dnl PHP_ADD_MAKEFILE_FRAGMENT([Makefile.thirdparty])
 
