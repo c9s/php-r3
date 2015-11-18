@@ -10,7 +10,7 @@ compiler:
 - gcc
 
 env:
-- NO_INTERACTIVE=1
+- NO_INTERACTION=1
 
 install:
 - sudo apt-get update -qq
