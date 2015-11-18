@@ -271,7 +271,7 @@ PHP_FUNCTION(r3_tree_compile)
         // php_error(E_ERROR, estrdup(errstr));
         RETURN_FALSE;
     }
-    res->compiled = TRUE;
+    res->compiled = true;
     RETURN_TRUE;
 }
 
@@ -300,7 +300,7 @@ PHP_FUNCTION(r3_tree_create_persist)
 
     php_r3_resource *res;
     res = pemalloc(sizeof(php_r3_resource), 1);
-    res->compiled = FALSE;
+    res->compiled = false;
     res->node = r3_tree_create(capacity);
     ZEND_REGISTER_RESOURCE(return_value, res, le_r3_resource_persist);
 
