@@ -10,7 +10,6 @@
 
 #include <php.h>
 #include <r3.h>
-#include <r3_str.h>
 #include "common.h"
 
 extern zend_module_entry r3_module_entry;
